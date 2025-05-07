@@ -1,3 +1,4 @@
+import java.util.Objects;
 
 public class Tuple {
     // The key of the tuple, declared as final to ensure immutability after initialization.
@@ -11,6 +12,32 @@ public class Tuple {
     public Tuple(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+    // Getter methods for the key and value fields.
+    public String getKey() {
+        return key;
+    }
+    // Getter method for the value field.
+    public String getValue() {
+        return value;
+    }
+    // Setter method for the value field.
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
+    // Override the equals and hashCode methods to ensure immutability and uniqueness of keys.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tuple tuple = (Tuple) o;
+        return Objects.equals(key, tuple.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
     }
 }
 
