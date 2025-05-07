@@ -8,16 +8,17 @@ public class Server {
     private static final int PORT = 9090;
      //The server listens for the port number of the incoming client connection.
     private static final int TIMEOUT_SECONDS = 10;
-    
+    //A list that stores tuples in the tuple space. Each tuple consists of a key-value pair.
     private final List<Tuple> tupleSpace = new ArrayList<>();
-   
+    //The total number of clients that have connected to the server.
     private int clientCount = 0;
     private int operationCount = 0;
     private int readCount = 0;
     private int getCount = 0;
     private int putCount = 0;
     private int errorCount = 0;
-    
+    // A thread pool with a fixed size of 10 threads for processing multiple client connections at the same time.
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     
 
