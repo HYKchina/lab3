@@ -35,5 +35,12 @@ public class Server {
             e.printStackTrace();
         }
     }
+    private class ClientHandler implements Runnable {
+        private final Socket clientSocket;
+
+ // Constructor to initialize the client socket.
+        public ClientHandler(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+        }
 
 }
