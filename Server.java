@@ -28,6 +28,9 @@ public class Server {
             System.out.println("Server is running and ready to accept multiple clients...");
             //Create a timer to schedule summary tasks
             Timer timer = new Timer();
+
+            // Schedule the SummaryTask to run every TIMEOUT_SECONDS seconds, starting immediately.
+            timer.schedule(new SummaryTask(), 0, TIMEOUT_SECONDS * 1000);
             
         } 
         catch (IOException e) {
