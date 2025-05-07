@@ -154,6 +154,12 @@ public class Server {
                 totalKeySize += tuple.getKey().length();
                 totalValueSize += tuple.getValue().length();
             }
+
+        // Calculate averages (avoid division by zero)
+        double averageTupleSize = tupleCount > 0 ? (double) totalTupleSize / tupleCount : 0;
+        double averageKeySize = tupleCount > 0 ? (double) totalKeySize / tupleCount : 0;
+        double averageValueSize = tupleCount > 0 ? (double) totalValueSize / tupleCount : 0;
+
         }
     }
 }
