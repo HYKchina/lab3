@@ -64,16 +64,20 @@ public class Server {
                             response = "ERR invalid input";
                             errorCount++;
                         } else {
-                            //
+                            String value = parts[2];
+                            response = handlePut(key, value);
                         }
+                    }else if ("READ".equals(command)) {
+                        response = handleRead(key);
+                    } else if ("GET".equals(command)) {
+                        response = handleGet(key);
                     }
-                    //
                      else {
                         response = "ERR invalid command";
                         errorCount++;
                     }
                      
-                    //out.println(response);
+                    out.println(response);
                 }
             } catch (IOException e) {
                 
@@ -86,6 +90,53 @@ public class Server {
                 }
             }
         }
-        
+        private String handlePut(String key, String value) {
+            putCount++;
+            for (Tuple tuple : tupleSpace) {
+                if (tuple.getKey().equals(key)) {
+                    return "ERR " + key + " already exists";
+                }
+            }
+                 
+    // If the key does not exist, add a new tuple to the tuple space.
+            tupleSpace.add(new Tuple(key, value));
+            return "OK (" + key + ", " + value + ") added";
+        }
+        // Handles the READ operation by retrieving the value associated with the key from the tuple space.
+        private String handleRead(String key) {
+            // Increment the counter tracking total READ operations
+            readCount++;
+
+            // Iterate through all tuples in the tuple space to find a matching key
+            for (Tuple tuple : tupleSpace) {
+                // Check if the current tuple's key matches the requested key
+                if (tuple.getKey().equals(key)) {
+                    // Return a success response with the key-value pair
+                    return "OK (" + key + ", " + tuple.getValue() + ") read";
+                }
+            }
+            // If no matching key is found, increment the error counter
+            errorCount++;
+            return "ERR " + key + " does not exist";
+        }
+
+        // Handles the GET operation by removing the tuple associated with the key from the tuple space.
+        private String handleGet(String key) {
+            // Increment the counter tracking total GET operations
+            getCount++;
+            // Use an iterator to safely traverse and modify the tuple space
+            for (Iterator<Tuple> it = tupleSpace.iterator(); it.hasNext(); ) {
+                // Get the next tuple in the iteration
+                Tuple tuple = it.next();// Check if the current tuple's key matches the requested key
+                if (tuple.getKey().equals(key)) {
+                    it.remove();// Remove the tuple from the tuple space using the iterator
+                    return "OK (" + key + ", " + tuple.getValue() + ") removed";// Return a success response with the removed key-value pair
+                }
+            }
+            // If no matching key is found, increment the error counter
+            errorCount++;
+            // Return an error response indicating the key does not exist
+            return "ERR " + key + " does not exist";
+        }
     }
 }
