@@ -21,5 +21,13 @@ public class Server {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     
+    public void start() {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        } 
+        catch (IOException e) {
+            
+            e.printStackTrace();
+    }
+
 
 }
