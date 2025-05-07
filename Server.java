@@ -23,11 +23,15 @@ public class Server {
     
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            
+            System.out.println("Server is running and ready to accept multiple clients...");
+            
+            Timer timer = new Timer();
+            
         } 
         catch (IOException e) {
-            
+            // Print the stack trace if an I/O error occurs while starting the server.
             e.printStackTrace();
     }
-
 
 }
