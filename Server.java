@@ -35,12 +35,55 @@ public class Server {
             e.printStackTrace();
         }
     }
+    //andle a single client session
     private class ClientHandler implements Runnable {
         private final Socket clientSocket;
 
- // Constructor to initialize the client socket.
+    // Constructor to initialize the client socket.
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
+    
 
+        @Override
+        public void run() {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+                    
+                String inputLine;
+                
+                while ((inputLine = in.readLine()) != null) {
+                    operationCount++;
+                    
+                    String[] parts = inputLine.split(" ");
+                    String command = parts[0];
+                    String key = parts[1];
+                    String response;
+                    if ("PUT".equals(command)) {
+                        if (parts.length < 3) {
+                            response = "ERR invalid input";
+                            errorCount++;
+                        } else {
+                            //
+                        }
+                    }
+                    //
+                     else {
+                        response = "ERR invalid command";
+                        errorCount++;
+                    }
+                     
+                    //out.println(response);
+                }
+            } catch (IOException e) {
+                
+                e.printStackTrace();
+            } finally {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                      
+                }
+            }
+        }
 }
