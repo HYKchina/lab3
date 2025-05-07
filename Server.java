@@ -21,17 +21,19 @@ public class Server {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     
+    // Start the server, listen for incoming client connections, and schedule rollup tasks
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            
+            //Prints a message that the server is running and ready to accept clients        
             System.out.println("Server is running and ready to accept multiple clients...");
-            
+            //Create a timer to schedule summary tasks
             Timer timer = new Timer();
             
         } 
         catch (IOException e) {
             // Print the stack trace if an I/O error occurs while starting the server.
             e.printStackTrace();
+        }
     }
 
 }
