@@ -160,6 +160,21 @@ public class Server {
         double averageKeySize = tupleCount > 0 ? (double) totalKeySize / tupleCount : 0;
         double averageValueSize = tupleCount > 0 ? (double) totalValueSize / tupleCount : 0;
 
+        // Print server summary statistics
+        System.out.println("--------------------- Server Summary ---------------------");
+        System.out.println("Number of tuples: " + tupleCount);                   // 元组数量
+        System.out.println("Average tuple size: " + averageTupleSize);           // 平均元组大小（字符数）
+        System.out.println("Average key size: " + averageKeySize);               // 平均键长度
+        System.out.println("Average value size: " + averageValueSize);           // 平均值长度
+        System.out.println("Total number of clients: " + clientCount);           // 总客户端连接数
+        System.out.println("Total number of operations: " + operationCount);     // 总操作次数
+        System.out.println("Total READs: " + readCount);                         // READ 操作次数
+        System.out.println("Total GETs: " + getCount);                           // GET 操作次数
+        System.out.println("Total PUTs: " + putCount);                           // PUT 操作次数
+        System.out.println("Total errors: " + errorCount);                       // 总错误次数
+        System.out.println("---------------------------------------------------------");
+    
+
         }
     }
 }
