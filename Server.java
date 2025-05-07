@@ -94,15 +94,21 @@ public class Server {
             }
         }
         private String handlePut(String key, String value) {
+            // Increment the counter tracking total PUT operations
             putCount++;
+
+            // Iterate through all existing tuples to check for duplicate keys
             for (Tuple tuple : tupleSpace) {
+                // If a tuple with the same key is found
                 if (tuple.getKey().equals(key)) {
+                    // Return error message indicating key already exists (protocol-compliant format)
                     return "ERR " + key + " already exists";
                 }
             }
                  
     // If the key does not exist, add a new tuple to the tuple space.
             tupleSpace.add(new Tuple(key, value));
+            // Return success message with the added key-value pair (protocol-compliant format)
             return "OK (" + key + ", " + value + ") added";
         }
         // Handles the READ operation by retrieving the value associated with the key from the tuple space.
