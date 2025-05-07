@@ -140,6 +140,15 @@ public class Server {
         }
     }
     private class SummaryTask extends TimerTask {
+        // The main method that is executed when the timer fires.
+        
+        @Override
+        public void run() {
+            int tupleCount = tupleSpace.size();
+            int totalTupleSize = 0;
+            int totalKeySize = 0;
+            int totalValueSize = 0;
+            
         }
     }
 }
