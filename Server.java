@@ -50,46 +50,65 @@ public class Server {
 
         @Override
         public void run() {
+            // Use try-with-resources to auto-close input/output streams
             try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                  PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-                    
+                
+                // Variable to store each line of client input
                 String inputLine;
                 
+                // Continuously read requests from client until connection closes
                 while ((inputLine = in.readLine()) != null) {
+                    // Increment total operation counter (thread safety needed in multi-threaded environment)
                     operationCount++;
                     
+                    // Split input line into command components using whitespace
                     String[] parts = inputLine.split(" ");
+                    // Extract command type (first token)
                     String command = parts[0];
+                    // Extract key (second token)
                     String key = parts[1];
                     String response;
+        
+                    // Process PUT command
                     if ("PUT".equals(command)) {
+                        // Validate required parameters (key + value)
                         if (parts.length < 3) {
                             response = "ERR invalid input";
-                            errorCount++;
+                            errorCount++;  // Track invalid input errors
                         } else {
+                            // Extract value (third token onward)
                             String value = parts[2];
+                            // Delegate to PUT handler method
                             response = handlePut(key, value);
                         }
-                    }else if ("READ".equals(command)) {
+                    }
+                    // Process READ command
+                    else if ("READ".equals(command)) {
                         response = handleRead(key);
-                    } else if ("GET".equals(command)) {
+                    }
+                    // Process GET command
+                    else if ("GET".equals(command)) {
                         response = handleGet(key);
                     }
-                     else {
+                    // Handle unknown commands
+                    else {
                         response = "ERR invalid command";
-                        errorCount++;
+                        errorCount++;  // Track invalid command errors
                     }
-                     
+                    
+                    // Send response back to client
                     out.println(response);
                 }
             } catch (IOException e) {
-                
+                // Log I/O errors (e.g., connection reset, stream closed)
                 e.printStackTrace();
             } finally {
                 try {
+                    // Ensure client socket is closed even if exceptions occur
                     clientSocket.close();
                 } catch (IOException e) {
-                      
+                    // Silent handling of socket close failure (common during normal disconnects)
                 }
             }
         }
@@ -153,37 +172,43 @@ public class Server {
 
         @Override
         public void run() {
+            // Get the current number of tuples in the tuple space
             int tupleCount = tupleSpace.size();
-            int totalTupleSize = 0;
-            int totalKeySize = 0;
-            int totalValueSize = 0;
             
+            // Initialize accumulators for total size calculations
+            int totalTupleSize = 0;       // Total combined size of all keys and values
+            int totalKeySize = 0;         // Total size of all keys (sum of key lengths)
+            int totalValueSize = 0;       // Total size of all values (sum of value lengths)
+            
+            // Iterate through each tuple in the tuple space
             for (Tuple tuple : tupleSpace) {
+                // Calculate combined length of key and value for the current tuple
                 totalTupleSize += tuple.getKey().length() + tuple.getValue().length();
+                
+                // Accumulate key length to total key size
                 totalKeySize += tuple.getKey().length();
+                
+                // Accumulate value length to total value size
                 totalValueSize += tuple.getValue().length();
             }
 
-        // Calculate averages (avoid division by zero)
-        double averageTupleSize = tupleCount > 0 ? (double) totalTupleSize / tupleCount : 0;
-        double averageKeySize = tupleCount > 0 ? (double) totalKeySize / tupleCount : 0;
-        double averageValueSize = tupleCount > 0 ? (double) totalValueSize / tupleCount : 0;
+            // Calculate averages (avoid division by zero)
+            double averageTupleSize = tupleCount > 0 ? (double) totalTupleSize / tupleCount : 0;
+            double averageKeySize = tupleCount > 0 ? (double) totalKeySize / tupleCount : 0;
+            double averageValueSize = tupleCount > 0 ? (double) totalValueSize / tupleCount : 0;
 
-        // Print server summary statistics
-        System.out.println("--------------------- Server Summary ---------------------");
-        System.out.println("Number of tuples: " + tupleCount);                   // 元组数量
-        System.out.println("Average tuple size: " + averageTupleSize);           // 平均元组大小（字符数）
-        System.out.println("Average key size: " + averageKeySize);               // 平均键长度
-        System.out.println("Average value size: " + averageValueSize);           // 平均值长度
-        System.out.println("Total number of clients: " + clientCount);           // 总客户端连接数
-        System.out.println("Total number of operations: " + operationCount);     // 总操作次数
-        System.out.println("Total READs: " + readCount);                         // READ 操作次数
-        System.out.println("Total GETs: " + getCount);                           // GET 操作次数
-        System.out.println("Total PUTs: " + putCount);                           // PUT 操作次数
-        System.out.println("Total errors: " + errorCount);                       // 总错误次数
-        System.out.println("---------------------------------------------------------");
-    
-
+            // Print server summary statistics
+            System.out.println("--------------------- Server Summary ---------------------");
+            System.out.println("Tuples number: " + tupleCount);                   // 元组数量
+            System.out.println("The average of tuple size: " + averageTupleSize);           // 平均元组大小（字符数）
+            System.out.println("The average of key size: " + averageKeySize);               // 平均键长度
+            System.out.println("The average of value size: " + averageValueSize);           // 平均值长度
+            System.out.println("Total clients number: " + clientCount);           // 总客户端连接数
+            System.out.println("Total  operations number: " + operationCount);     // 总操作次数
+            System.out.println("Total READs: " + readCount);                         // READ 操作次数
+            System.out.println("Total GETs: " + getCount);                           // GET 操作次数
+            System.out.println("Total PUTs: " + putCount);                           // PUT 操作次数
+            System.out.println("Total errors: " + errorCount);                       // 总错误次数
         }
     }
     // Main entry point for the server
